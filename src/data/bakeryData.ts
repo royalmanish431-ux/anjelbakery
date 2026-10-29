@@ -2,6 +2,7 @@ import { BakeryItem, PromoCode, OrderHistoryItem } from '../types';
 
 export const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1dzI2FZcWBwoNaIA4Q5coTK7Al-K_bq2vEsBCUNuvIoo/edit?usp=drivesdk';
 export const GOOGLE_SHEET_CSV_EXPORT = 'https://docs.google.com/spreadsheets/d/1dzI2FZcWBwoNaIA4Q5coTK7Al-K_bq2vEsBCUNuvIoo/export?format=csv';
+export const APK_DOWNLOAD_URL = 'https://github.com/royalmanish431-ux/app-apk-storage/releases/download/v1.0.0/Anjelbakery.apk';
 
 export const BAKERY_INFO = {
   name: 'Angel Bakery',

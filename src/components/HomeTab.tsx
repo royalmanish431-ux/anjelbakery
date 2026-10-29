@@ -16,7 +16,7 @@ import {
   Share2
 } from 'lucide-react';
 import { BakeryCategory, BakeryItem, CartItem } from '../types';
-import { BAKERY_CATEGORIES, BAKERY_ITEMS, BAKERY_INFO, GOOGLE_SHEET_URL, CATEGORY_DEFAULT_IMAGES } from '../data/bakeryData';
+import { BAKERY_CATEGORIES, BAKERY_ITEMS, BAKERY_INFO, GOOGLE_SHEET_URL, CATEGORY_DEFAULT_IMAGES, APK_DOWNLOAD_URL } from '../data/bakeryData';
 import { getDirectWhatsAppInquiryUrl } from '../utils/whatsapp';
 
 interface HomeTabProps {
@@ -206,12 +206,15 @@ export default function HomeTab({
               Fast ordering on Android
             </p>
           </div>
-          <button
-            onClick={onOpenLocation}
+          <a
+            href={APK_DOWNLOAD_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            download="Anjelbakery.apk"
             className="mt-2.5 w-full bg-[#b3001e] hover:bg-red-800 text-white text-[11px] font-bold py-1.5 rounded-lg flex items-center justify-center gap-1 transition-colors"
           >
             <span>Download</span>
-          </button>
+          </a>
         </div>
       </div>
 

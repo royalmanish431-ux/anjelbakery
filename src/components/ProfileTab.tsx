@@ -11,10 +11,11 @@ import {
   Eye, 
   EyeOff,
   ShieldCheck,
-  Phone
+  Phone,
+  Download
 } from 'lucide-react';
 import { UserProfile } from '../types';
-import { BAKERY_INFO } from '../data/bakeryData';
+import { BAKERY_INFO, APK_DOWNLOAD_URL } from '../data/bakeryData';
 
 interface ProfileTabProps {
   currentUser: UserProfile | null;
@@ -465,6 +466,17 @@ export default function ProfileTab({
               <span>Call</span>
             </a>
           </div>
+
+          <a
+            href={APK_DOWNLOAD_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            download="Anjelbakery.apk"
+            className="w-full bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold py-2 rounded-xl text-center flex items-center justify-center gap-1.5 shadow-2xs transition-colors mt-2"
+          >
+            <Download className="w-3.5 h-3.5" />
+            <span>Download Android App (APK)</span>
+          </a>
         </div>
 
         {/* Footer */}

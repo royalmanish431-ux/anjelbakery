@@ -10,10 +10,11 @@ import {
   X,
   Award,
   Navigation,
-  MessageCircle
+  MessageCircle,
+  Download
 } from 'lucide-react';
 import { Tab } from '../types';
-import { BAKERY_INFO, GOOGLE_SHEET_URL } from '../data/bakeryData';
+import { BAKERY_INFO, GOOGLE_SHEET_URL, APK_DOWNLOAD_URL } from '../data/bakeryData';
 import { getDirectWhatsAppInquiryUrl } from '../utils/whatsapp';
 
 interface SidebarProps {
@@ -128,6 +129,21 @@ export default function Sidebar({
               <div>
                 <span className="block leading-tight">Order via WhatsApp</span>
                 <span className="text-[10px] text-emerald-400/80 font-normal">8604888113</span>
+              </div>
+            </a>
+
+            {/* Download Android APK */}
+            <a
+              href={APK_DOWNLOAD_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              download="Anjelbakery.apk"
+              className="w-full flex items-center gap-2.5 p-2.5 rounded-xl bg-purple-950/60 border border-purple-700/50 text-purple-300 text-xs font-bold hover:bg-purple-900/60 transition-colors text-left"
+            >
+              <Download className="w-4 h-4 text-purple-400 shrink-0" />
+              <div>
+                <span className="block leading-tight">Download Android App</span>
+                <span className="text-[10px] text-purple-400/80 font-normal">Direct APK Download</span>
               </div>
             </a>
 
