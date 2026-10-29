@@ -47,9 +47,11 @@ export default function LocationModal({ isOpen, onClose }: LocationModalProps) {
           {/* Address Card */}
           <div className="p-3.5 bg-rose-50/70 border border-rose-200/80 rounded-xl space-y-2">
             <div className="flex items-start gap-2.5">
-              <div className="w-8 h-8 rounded-lg bg-[#e23744] text-white flex items-center justify-center shrink-0 mt-0.5">
-                <MapPin className="w-4 h-4" />
-              </div>
+              <img
+                src={BAKERY_INFO.logo}
+                alt="Angel Bakery Logo"
+                className="w-11 h-11 rounded-full object-cover bg-white shadow-xs border border-rose-300 shrink-0 mt-0.5"
+              />
               <div>
                 <h4 className="font-black text-stone-900 text-sm">
                   {BAKERY_INFO.name}

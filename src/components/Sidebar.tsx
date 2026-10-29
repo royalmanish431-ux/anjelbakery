@@ -60,21 +60,28 @@ export default function Sidebar({
       >
         {/* Header */}
         <div className="p-4 bg-[#e23744] text-white flex items-start justify-between">
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-xl font-black tracking-tight">
-                Angel Bakery
-              </span>
-              <span className="text-[9px] bg-white text-[#e23744] font-extrabold px-1.5 py-0.2 rounded-xs">
-                ZOMATO
-              </span>
-            </div>
-            <p className="text-[11px] text-white/90 mt-0.5">
-              Chandpur, Uttar Pradesh
-            </p>
-            <div className="mt-2 flex items-center gap-1 text-[10px] text-white bg-white/15 px-2 py-0.5 rounded w-fit">
-              <Award className="w-3 h-3 text-amber-300" />
-              <span>100% Pure Veg · 4.8 ★ Rated</span>
+          <div className="flex items-center gap-3">
+            <img
+              src={BAKERY_INFO.logo}
+              alt="Angel Bakery Logo"
+              className="w-12 h-12 rounded-full object-cover bg-white shadow-md border-2 border-white/60 shrink-0"
+            />
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xl font-black tracking-tight">
+                  Angel Bakery
+                </span>
+                <span className="text-[9px] bg-white text-[#e23744] font-extrabold px-1.5 py-0.2 rounded-xs">
+                  STORE
+                </span>
+              </div>
+              <p className="text-[11px] text-white/90 mt-0.5">
+                Chandpur, Uttar Pradesh
+              </p>
+              <div className="mt-1 flex items-center gap-1 text-[10px] text-white bg-white/15 px-2 py-0.5 rounded w-fit">
+                <Award className="w-3 h-3 text-amber-300" />
+                <span>100% Pure Veg · 4.8 ★ Rated</span>
+              </div>
             </div>
           </div>
           <button

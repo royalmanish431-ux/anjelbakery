@@ -3,6 +3,7 @@ import { BakeryItem, PromoCode, OrderHistoryItem } from '../types';
 export const GOOGLE_SHEET_URL = 'https://docs.google.com/spreadsheets/d/1dzI2FZcWBwoNaIA4Q5coTK7Al-K_bq2vEsBCUNuvIoo/edit?usp=drivesdk';
 export const GOOGLE_SHEET_CSV_EXPORT = 'https://docs.google.com/spreadsheets/d/1dzI2FZcWBwoNaIA4Q5coTK7Al-K_bq2vEsBCUNuvIoo/export?format=csv';
 export const APK_DOWNLOAD_URL = 'https://github.com/royalmanish431-ux/app-apk-storage/releases/download/v1.0.0/Anjelbakery.apk';
+export const BAKERY_LOGO_URL = '/assets/aistudio/1793268910804_3e0bc77d.png';
 
 export const BAKERY_INFO = {
   name: 'Angel Bakery',
@@ -11,6 +12,7 @@ export const BAKERY_INFO = {
   landmark: 'Patiyapara Chowk',
   address: 'Patiyapara Chowk, Chandpur, Uttar Pradesh 246725',
   pincode: '246725',
+  logo: '/assets/aistudio/1793268910804_3e0bc77d.png',
   phone: '8604888113',
   displayPhone: '+91 86048 88113',
   whatsappNumber: '918604888113',

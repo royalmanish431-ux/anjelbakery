@@ -66,9 +66,11 @@ export default function Header({
                 onClick={() => setActiveTab && setActiveTab('home')}
                 className="flex items-center gap-2 text-left group"
               >
-                <div className="w-10 h-10 rounded-xl bg-white text-[#b3001e] flex items-center justify-center text-xl shadow-md font-black group-hover:scale-105 transition-transform">
-                  🍰
-                </div>
+                <img
+                  src={BAKERY_INFO.logo}
+                  alt="Angel Bakery Logo"
+                  className="w-10 h-10 rounded-full object-cover shadow-md bg-white border border-white/60 group-hover:scale-105 transition-transform shrink-0"
+                />
                 <div>
                   <div className="text-lg font-black tracking-tight leading-tight flex items-center gap-1.5">
                     <span>Angel Bakery</span>
@@ -203,28 +205,43 @@ export default function Header({
 
           {/* MOBILE HEADER (< md) Matching original design */}
           <div className="block md:hidden">
-            {/* Top Header Row */}
+            {/* Top Header Row with Logo */}
             <div className="flex items-center justify-between gap-2 mb-2.5">
-              {/* Location button */}
-              <button
-                onClick={onOpenLocation}
-                className="flex items-center gap-1.5 text-left active:opacity-80 transition-opacity"
-                title="View Location & Directions"
-              >
-                <MapPin className="w-4 h-4 text-white shrink-0 fill-white/20" />
-                <div>
-                  <div className="flex items-center gap-1 leading-tight">
-                    <span className="text-[13px] font-bold tracking-wide">HOME</span>
-                    <ChevronDown className="w-3.5 h-3.5 opacity-90" />
+              <div className="flex items-center gap-2 min-w-0">
+                {/* Angel Bakery Brand Logo */}
+                <button
+                  onClick={() => setActiveTab && setActiveTab('home')}
+                  className="shrink-0 active:scale-95 transition-transform"
+                  aria-label="Angel Bakery Home"
+                >
+                  <img
+                    src={BAKERY_INFO.logo}
+                    alt="Angel Bakery Logo"
+                    className="w-9 h-9 rounded-full object-cover bg-white shadow-xs border border-white/60"
+                  />
+                </button>
+
+                {/* Location button */}
+                <button
+                  onClick={onOpenLocation}
+                  className="flex items-center gap-1.5 text-left active:opacity-80 transition-opacity min-w-0"
+                  title="View Location & Directions"
+                >
+                  <MapPin className="w-3.5 h-3.5 text-white shrink-0 fill-white/20" />
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1 leading-tight">
+                      <span className="text-[13px] font-bold tracking-wide">HOME</span>
+                      <ChevronDown className="w-3.5 h-3.5 opacity-90" />
+                    </div>
+                    <div className="text-[11px] text-white/90 truncate max-w-[190px] leading-tight font-medium">
+                      Angel Bakery • Patiyapara Chowk
+                    </div>
                   </div>
-                  <div className="text-[11px] text-white/90 truncate max-w-[210px] leading-tight font-medium">
-                    Angel Bakery • Patiyapara Chowk, Chandpur
-                  </div>
-                </div>
-              </button>
+                </button>
+              </div>
 
               {/* Right Action: By Owner Badge */}
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={onOpenLocation}
                   className="flex items-center gap-1 bg-white/20 hover:bg-white/30 text-white text-[11px] font-semibold px-2.5 py-1 rounded-full border border-white/25 transition-colors"

@@ -260,34 +260,41 @@ export default function HomeTab({
             )}
           </div>
         ) : (
-          /* Clean Default Banner when NO items have offers in the sheet */
+          /* Clean Default Banner with Angel Bakery Logo */
           <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-600 via-rose-600 to-[#b3001e] text-white p-4 shadow-md">
-            <div className="relative z-10">
-              <div className="flex items-center justify-between mb-1.5 flex-wrap gap-1">
-                <div className="inline-flex items-center gap-1.5 bg-black/25 backdrop-blur-xs px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border border-white/20">
-                  <span>ANGEL BAKERY CHANDPUR</span>
+            <div className="relative z-10 flex items-center justify-between gap-3">
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center justify-between mb-1.5 flex-wrap gap-1">
+                  <div className="inline-flex items-center gap-1.5 bg-black/25 backdrop-blur-xs px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border border-white/20">
+                    <span>ANGEL BAKERY CHANDPUR</span>
+                  </div>
+                </div>
+                
+                <h2 className="text-xl sm:text-2xl font-black tracking-tight leading-tight uppercase drop-shadow-xs">
+                  {deliverySettings?.deliveryFee === 0 ? 'FREE DELIVERY' : `DELIVERY ₹${deliverySettings?.deliveryFee}`}
+                </h2>
+                <p className="text-xs text-white/95 mt-1 font-medium max-w-[280px] leading-snug">
+                  {deliverySettings?.deliveryDescription || 'Authentic Indian Sweets, Fresh Designer Cakes & Fast Food delivered straight to your door!'}
+                </p>
+
+                <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-white/20 text-[10px] font-bold">
+                  <span className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-md">
+                    ⏱️ Fast delivery 30-45 mins
+                  </span>
+                  <span className="flex items-center gap-1 bg-emerald-600 text-white px-2 py-0.5 rounded-md">
+                    🌿 100% PURE VEG
+                  </span>
                 </div>
               </div>
-              
-              <h2 className="text-xl sm:text-2xl font-black tracking-tight leading-tight uppercase drop-shadow-xs">
-                {deliverySettings?.deliveryFee === 0 ? 'FREE DELIVERY' : `DELIVERY ₹${deliverySettings?.deliveryFee}`}
-              </h2>
-              <p className="text-xs text-white/95 mt-1 font-medium max-w-[280px] leading-snug">
-                {deliverySettings?.deliveryDescription || 'Authentic Indian Sweets, Fresh Designer Cakes & Fast Food delivered straight to your door!'}
-              </p>
 
-              <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-white/20 text-[10px] font-bold">
-                <span className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-md">
-                  ⏱️ Fast delivery 30-45 mins
-                </span>
-                <span className="flex items-center gap-1 bg-emerald-600 text-white px-2 py-0.5 rounded-md">
-                  🌿 100% PURE VEG
-                </span>
+              {/* Brand Logo Display */}
+              <div className="shrink-0">
+                <img
+                  src={BAKERY_INFO.logo}
+                  alt="Angel Bakery"
+                  className="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover shadow-lg border-2 border-white/80 bg-white"
+                />
               </div>
-            </div>
-            {/* Decorative food motif watermark */}
-            <div className="absolute -right-4 -bottom-6 text-7xl opacity-20 pointer-events-none select-none">
-              🎂
             </div>
           </div>
         )}
