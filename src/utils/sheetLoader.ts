@@ -1,9 +1,9 @@
 import { BakeryItem, BakeryCategory, DeliverySettings, ItemVariant } from '../types';
 import { BAKERY_ITEMS, GOOGLE_SHEET_CSV_EXPORT, DEFAULT_DELIVERY_SETTINGS } from '../data/bakeryData';
 
-const CACHE_KEY = 'angel_bakery_sheet_items_v10';
-const CACHE_TIME_KEY = 'angel_bakery_sheet_items_time_v10';
-const CACHE_DELIVERY_KEY = 'angel_bakery_delivery_settings_v6';
+const CACHE_KEY = 'angel_bakery_sheet_items_v15';
+const CACHE_TIME_KEY = 'angel_bakery_sheet_items_time_v15';
+const CACHE_DELIVERY_KEY = 'angel_bakery_delivery_settings_v15';
 
 export interface SheetParseResult {
   items: BakeryItem[];
@@ -275,11 +275,25 @@ export function parseSheetCSVFull(csvText: string): SheetParseResult {
     deliveryDescIdx = 10; // Column K (11th column)
   }
 
+  // Column L is Offers (Index 11)
+  let offerIdx = headers.findIndex((h) => 
+    h.includes('offer') || 
+    h.includes('discount') || 
+    h.includes('deal') || 
+    h.includes('promo') ||
+    h === 'offers' ||
+    h === 'offer'
+  );
+  if (offerIdx === -1) {
+    offerIdx = 11; // Column L (12th column, index 11)
+  }
+
   const parsedItems: BakeryItem[] = [];
   const seenIds = new Set<string>();
 
   let detectedDeliveryFee: number | undefined = undefined;
   let detectedDeliveryDesc: string | undefined = undefined;
+  let detectedStoreOffer: string | undefined = undefined;
 
   const startLine = headerIndex >= 0 ? headerIndex + 1 : 0;
 
@@ -302,6 +316,8 @@ export function parseSheetCSVFull(csvText: string): SheetParseResult {
     let rawDeliveryVal = deliveryValIdx >= 0 && row[deliveryValIdx] ? row[deliveryValIdx].trim() : (row[9] ? row[9].trim() : '');
     // Column K (Index 10) Delivery Description
     let rawDeliveryDesc = deliveryDescIdx >= 0 && row[deliveryDescIdx] ? row[deliveryDescIdx].trim() : (row[10] ? row[10].trim() : '');
+    // Column L (Index 11) Offers
+    let rawOffer = offerIdx >= 0 && row[offerIdx] ? row[offerIdx].trim() : (row[11] ? row[11].trim() : '');
 
     // Collect delivery fee from Column J
     if (rawDeliveryVal) {
@@ -313,6 +329,10 @@ export function parseSheetCSVFull(csvText: string): SheetParseResult {
     // Collect delivery description from Column K
     if (rawDeliveryDesc && rawDeliveryDesc.length > 3 && !detectedDeliveryDesc) {
       detectedDeliveryDesc = rawDeliveryDesc;
+    }
+    // Collect store offer from Column L (e.g. "900%off")
+    if (rawOffer && !detectedStoreOffer && rawOffer.toLowerCase() !== 'offers' && rawOffer.toLowerCase() !== 'offer') {
+      detectedStoreOffer = rawOffer;
     }
 
     // Skip empty name or header row echoes
@@ -375,8 +395,14 @@ export function parseSheetCSVFull(csvText: string): SheetParseResult {
 
     const { category, label, emoji } = mapCategory(rawCat);
 
+    // Clean specific item offer from Column L (do NOT fallback to demo offers!)
+    const cleanOffer = (rawOffer && rawOffer.toLowerCase() !== 'offers' && rawOffer.toLowerCase() !== 'offer' && rawOffer !== '-') 
+      ? rawOffer 
+      : undefined;
+
     if (matchedCurated) {
       // Merge with curated item: ONLY use mediumPrice and largePrice if explicitly present in the Google Sheet!
+      // And ONLY set offerTag if this specific item has an offer in Column L!
       parsedItems.push({
         ...matchedCurated,
         id: finalId,
@@ -396,6 +422,7 @@ export function parseSheetCSVFull(csvText: string): SheetParseResult {
         youtubeUrl: finalYt || matchedCurated.youtubeUrl,
         deliveryValue: parsePrice(rawDeliveryVal),
         deliveryDescription: rawDeliveryDesc || undefined,
+        offerTag: cleanOffer,
       });
     } else {
       // Create new item with dynamic category
@@ -416,6 +443,7 @@ export function parseSheetCSVFull(csvText: string): SheetParseResult {
         youtubeUrl: finalYt || undefined,
         deliveryValue: parsePrice(rawDeliveryVal),
         deliveryDescription: rawDeliveryDesc || undefined,
+        offerTag: cleanOffer,
         isVegetarian: true,
         isCustomizable: medPrice !== undefined || lrgPrice !== undefined || category === 'cakes',
         rating: 4.8,
@@ -427,11 +455,12 @@ export function parseSheetCSVFull(csvText: string): SheetParseResult {
     }
   }
 
-  // Construct final delivery settings
+  // Construct final delivery settings (no fake demo storeOffer)
   const deliverySettings: DeliverySettings = {
     deliveryFee: detectedDeliveryFee !== undefined ? detectedDeliveryFee : DEFAULT_DELIVERY_SETTINGS.deliveryFee,
     deliveryDescription: detectedDeliveryDesc || DEFAULT_DELIVERY_SETTINGS.deliveryDescription,
     freeDeliveryThreshold: extractFreeDeliveryThreshold(detectedDeliveryDesc || DEFAULT_DELIVERY_SETTINGS.deliveryDescription),
+    storeOffer: detectedStoreOffer || undefined,
   };
 
   return {

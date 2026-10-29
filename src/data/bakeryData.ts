@@ -31,6 +31,7 @@ export const DEFAULT_DELIVERY_SETTINGS = {
   deliveryFee: 50,
   freeDeliveryThreshold: 600,
   deliveryDescription: 'if till you take a 600 rupay then you get free delivery 🛺',
+  storeOffer: undefined as string | undefined,
 };
 
 export const BAKERY_CATEGORIES = [
@@ -120,7 +121,6 @@ export const BAKERY_ITEMS: BakeryItem[] = [
     name: 'Rasmalai Cake',
     nameHindi: 'रसमलाई केक',
     stock: 67,
-    offerTag: 'BUY 10 PEC 2PEC FREE',
     category: 'cakes',
     categoryLabel: 'Fresh Cakes',
     price: 800,
@@ -143,7 +143,6 @@ export const BAKERY_ITEMS: BakeryItem[] = [
     name: 'Black Forest Cake',
     nameHindi: 'ब्लैक फॉरेस्ट केक',
     stock: 54,
-    offerTag: 'BUY 1 GET 1 FREE 50% OFF',
     category: 'cakes',
     categoryLabel: 'Fresh Cakes',
     price: 500,
@@ -166,7 +165,6 @@ export const BAKERY_ITEMS: BakeryItem[] = [
     name: 'Red Velvet Cake',
     nameHindi: 'रेड वेलवेट केक',
     stock: 32,
-    offerTag: 'SPECIAL 20% OFF',
     category: 'cakes',
     categoryLabel: 'Fresh Cakes',
     price: 600,
@@ -188,7 +186,6 @@ export const BAKERY_ITEMS: BakeryItem[] = [
     name: 'Dutch Chocolate Truffle Cake',
     nameHindi: 'डच चॉकलेट ट्रफल केक',
     stock: 45,
-    offerTag: 'BUY 1 GET 1 FREE 50% OFF',
     category: 'cakes',
     categoryLabel: 'Fresh Cakes',
     price: 800,

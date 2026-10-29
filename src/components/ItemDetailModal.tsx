@@ -113,7 +113,7 @@ export default function ItemDetailModal({
   return (
     <div className="fixed inset-0 z-[2200] flex items-end sm:items-center justify-center bg-stone-950/70 backdrop-blur-sm p-0 sm:p-4">
       <div 
-        className="w-full max-w-[480px] bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in slide-in-from-bottom duration-200"
+        className="w-full max-w-lg md:max-w-xl bg-white rounded-t-3xl sm:rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-in slide-in-from-bottom duration-200"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header Visual Box with Real Photo or Fallback */}
@@ -136,9 +136,9 @@ export default function ItemDetailModal({
             <X className="w-5 h-5" />
           </button>
 
-          {item.badge && (
-            <span className="absolute top-3 left-3 bg-[#e23744] text-white text-[10px] font-bold px-2 py-0.5 rounded shadow-sm uppercase tracking-wide z-20">
-              {item.badge}
+          {(item.offerTag || item.badge) && (
+            <span className="absolute top-3 left-3 bg-[#b3001e] text-white text-[10px] font-black px-2.5 py-1 rounded-lg shadow-sm uppercase tracking-wide z-20 flex items-center gap-1">
+              <span>🔥 {item.offerTag || item.badge}</span>
             </span>
           )}
 

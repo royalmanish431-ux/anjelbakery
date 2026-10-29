@@ -21,7 +21,7 @@ export default function BottomNav({
     <>
       {/* Signature Zomato Floating Cart Bar (appears when items > 0 and not on cart tab) */}
       {totalCount > 0 && activeTab !== 'cart' && (
-        <div className="fixed bottom-[68px] left-1/2 -translate-x-1/2 w-[calc(100%-24px)] max-w-[456px] z-[998] animate-in slide-in-from-bottom-2 duration-150">
+        <div className="fixed bottom-[68px] md:bottom-8 left-1/2 -translate-x-1/2 w-[calc(100%-24px)] max-w-[456px] md:max-w-lg z-[998] animate-in slide-in-from-bottom-2 duration-150">
           <div 
             onClick={() => {
               setActiveTab('cart');
@@ -46,8 +46,8 @@ export default function BottomNav({
         </div>
       )}
 
-      {/* Main Bottom Bar matching template */}
-      <nav className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[480px] h-[58px] bg-white flex justify-around items-center border-t border-stone-200 z-[999] shadow-lg px-6">
+      {/* Main Bottom Bar (Mobile Only: hidden on md and up) */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 w-full h-[58px] bg-white flex justify-around items-center border-t border-stone-200 z-[999] shadow-lg px-6">
         {/* Home */}
         <button
           className={`flex flex-col items-center justify-center min-w-[64px] min-h-[44px] text-[11px] transition-colors ${

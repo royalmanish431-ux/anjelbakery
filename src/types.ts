@@ -63,6 +63,7 @@ export interface DeliverySettings {
   deliveryFee: number; // Column J: "Delivery value" (e.g. 50)
   deliveryDescription: string; // Column K: "Delivery discription" (e.g. "if till you take a 600 rupay then you get free delivery 🛺")
   freeDeliveryThreshold: number; // e.g. 600
+  storeOffer?: string; // Column L: "Offers" from owner (e.g. "900%off")
 }
 
 export interface CartItem {

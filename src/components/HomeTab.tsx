@@ -1,4 +1,4 @@
-import { useState, useMemo, type MouseEvent } from 'react';
+import { useState, useMemo, useEffect, type MouseEvent } from 'react';
 import { 
   Star, 
   Plus, 
@@ -13,9 +13,12 @@ import {
   Youtube,
   Instagram,
   Download,
-  Share2
+  Share2,
+  Sparkles,
+  Flame,
+  ArrowRight
 } from 'lucide-react';
-import { BakeryCategory, BakeryItem, CartItem } from '../types';
+import { BakeryCategory, BakeryItem, CartItem, DeliverySettings } from '../types';
 import { BAKERY_CATEGORIES, BAKERY_ITEMS, BAKERY_INFO, GOOGLE_SHEET_URL, CATEGORY_DEFAULT_IMAGES, APK_DOWNLOAD_URL } from '../data/bakeryData';
 import { getDirectWhatsAppInquiryUrl } from '../utils/whatsapp';
 
@@ -32,6 +35,7 @@ interface HomeTabProps {
   onOpenLocation: () => void;
   onRefreshSheet?: () => void;
   isSyncingSheet?: boolean;
+  deliverySettings?: DeliverySettings;
 }
 
 export default function HomeTab({
@@ -44,10 +48,30 @@ export default function HomeTab({
   onOpenLocation,
   onRefreshSheet,
   isSyncingSheet,
+  deliverySettings,
 }: HomeTabProps) {
   const menuItems = items && items.length > 0 ? items : BAKERY_ITEMS;
+  const storeOffer = deliverySettings?.storeOffer;
   const [selectedCategory, setSelectedCategory] = useState<BakeryCategory>('all');
   const [selectedItemSizes, setSelectedItemSizes] = useState<Record<string, string>>({});
+
+  // Filter items that actually have an offer in Google Sheet Column L
+  const offerItems = useMemo(() => {
+    return menuItems.filter((item) => Boolean(item.offerTag && item.offerTag.trim()));
+  }, [menuItems]);
+
+  const [activeOfferIndex, setActiveOfferIndex] = useState(0);
+
+  // Auto-rotate through offer items every 4 seconds with smooth animated transition
+  useEffect(() => {
+    if (offerItems.length <= 1) return;
+    const interval = setInterval(() => {
+      setActiveOfferIndex((prev) => (prev + 1) % offerItems.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [offerItems.length]);
+
+  const currentOfferItem = offerItems.length > 0 ? offerItems[activeOfferIndex % offerItems.length] : null;
 
   // Dynamically compute category tabs from all current menuItems
   // Supports ANY new category added in Google Sheet Column A!
@@ -133,41 +157,146 @@ export default function HomeTab({
 
   return (
     <div className="pb-24 bg-stone-100 min-h-screen">
-      {/* 1. Free Delivery / Special Deals Everyday Hero Banner (Matching Screenshot 2) */}
+      {/* 1. Animated Hero Banner showing Sheet Item with Offer */}
       <div className="p-3">
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-600 via-rose-600 to-[#b3001e] text-white p-4 shadow-md">
-          <div className="relative z-10">
-            <div className="inline-flex items-center gap-1.5 bg-black/25 backdrop-blur-xs px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase mb-1.5 border border-white/20">
-              <span>SPECIAL DEALS EVERYDAY</span>
-            </div>
-            
-            <h2 className="text-xl sm:text-2xl font-black tracking-tight leading-tight uppercase drop-shadow-xs">
-              FREE DELIVERY
-            </h2>
-            <p className="text-xs text-white/95 mt-1 font-medium max-w-[280px] leading-snug">
-              Authentic Indian Sweets, Fresh Designer Cakes & Fast Food delivered straight to your door!
-            </p>
+        {currentOfferItem ? (
+          <div 
+            onClick={() => onSelectItem(currentOfferItem)}
+            className="group relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-600 via-rose-600 to-[#b3001e] text-white p-4 shadow-md cursor-pointer transition-all hover:shadow-lg active:scale-[0.99]"
+          >
+            {/* Subtle glow / light flare animation */}
+            <div className="absolute -top-10 -left-10 w-36 h-36 bg-amber-400/20 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-10 -right-10 w-36 h-36 bg-white/10 rounded-full blur-2xl pointer-events-none" />
 
-            <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-white/20 text-[10px] font-bold">
-              <span className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-md">
-                ⏱️ Fast delivery 30-45 mins
-              </span>
-              <span className="flex items-center gap-1 bg-emerald-600 text-white px-2 py-0.5 rounded-md">
-                🌿 100% PURE VEG
-              </span>
+            <div className="relative z-10 flex items-center justify-between gap-3">
+              {/* Left Column: Offer Details */}
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-1.5 mb-1.5 flex-wrap">
+                  <span className="inline-flex items-center gap-1 bg-black/30 backdrop-blur-xs px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border border-white/20">
+                    <Sparkles className="w-2.5 h-2.5 text-amber-300 animate-spin" />
+                    <span>SPECIAL DEAL</span>
+                  </span>
+                  <span className="inline-flex items-center gap-1 bg-amber-400 text-stone-950 px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase shadow-xs animate-bounce">
+                    <Flame className="w-2.5 h-2.5 fill-red-600 text-red-600" />
+                    <span>{currentOfferItem.offerTag}</span>
+                  </span>
+                </div>
+
+                <h2 className="text-lg sm:text-2xl font-black tracking-tight leading-tight uppercase drop-shadow-xs truncate group-hover:text-amber-200 transition-colors">
+                  {currentOfferItem.name}
+                </h2>
+                
+                {currentOfferItem.nameHindi && (
+                  <p className="text-[11px] text-amber-100 font-medium truncate mt-0.5">
+                    {currentOfferItem.nameHindi}
+                  </p>
+                )}
+
+                <div className="mt-1 flex items-baseline gap-2">
+                  <span className="text-xl sm:text-2xl font-black text-white drop-shadow-xs">
+                    ₹{currentOfferItem.price}
+                  </span>
+                  {currentOfferItem.category === 'cakes' && (
+                    <span className="text-xs text-white/80 font-semibold">/ 1 Kg</span>
+                  )}
+                </div>
+
+                <p className="text-[11px] text-white/95 mt-1 font-medium leading-snug line-clamp-1">
+                  {deliverySettings?.deliveryDescription || 'Free delivery on orders over ₹600 🛺'}
+                </p>
+
+                {/* Claim Offer CTA Button */}
+                <div className="mt-2.5 flex items-center gap-2">
+                  <span className="bg-white text-[#b3001e] hover:bg-amber-100 text-[11px] font-black px-3.5 py-1.5 rounded-xl flex items-center gap-1 shadow-xs transition-transform group-hover:scale-105">
+                    <span>Order Deal Now</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </span>
+                  {offerItems.length > 1 && (
+                    <span className="text-[10px] font-bold text-white/80">
+                      {activeOfferIndex + 1} of {offerItems.length} offers
+                    </span>
+                  )}
+                </div>
+              </div>
+
+              {/* Right Column: Animated Item Photo */}
+              <div className="relative shrink-0">
+                <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-2xl overflow-hidden border-2 border-white/80 shadow-lg bg-stone-900 group-hover:scale-105 transition-all duration-300">
+                  <img
+                    key={currentOfferItem.id}
+                    src={currentOfferItem.imageUrl || CATEGORY_DEFAULT_IMAGES[currentOfferItem.category] || CATEGORY_DEFAULT_IMAGES['all']}
+                    alt={currentOfferItem.name}
+                    className="w-full h-full object-cover transition-all duration-500 hover:scale-110"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      target.src = CATEGORY_DEFAULT_IMAGES[currentOfferItem.category] || CATEGORY_DEFAULT_IMAGES['all'];
+                    }}
+                  />
+                  {/* Floating badge */}
+                  <div className="absolute bottom-1 right-1 bg-[#b3001e] text-white text-[9px] font-black px-1.5 py-0.5 rounded shadow-xs border border-white/40">
+                    {currentOfferItem.offerTag}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Pagination dots if multiple items have offers */}
+            {offerItems.length > 1 && (
+              <div className="flex items-center justify-center gap-1.5 mt-3 pt-2 border-t border-white/20">
+                {offerItems.map((item, idx) => (
+                  <button
+                    key={item.id}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveOfferIndex(idx);
+                    }}
+                    className={`h-1.5 rounded-full transition-all ${
+                      idx === activeOfferIndex ? 'w-5 bg-amber-400' : 'w-1.5 bg-white/40'
+                    }`}
+                    aria-label={`Go to offer ${idx + 1}`}
+                  />
+                ))}
+              </div>
+            )}
+          </div>
+        ) : (
+          /* Clean Default Banner when NO items have offers in the sheet */
+          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-600 via-rose-600 to-[#b3001e] text-white p-4 shadow-md">
+            <div className="relative z-10">
+              <div className="flex items-center justify-between mb-1.5 flex-wrap gap-1">
+                <div className="inline-flex items-center gap-1.5 bg-black/25 backdrop-blur-xs px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wider uppercase border border-white/20">
+                  <span>ANGEL BAKERY CHANDPUR</span>
+                </div>
+              </div>
+              
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight leading-tight uppercase drop-shadow-xs">
+                FREE DELIVERY
+              </h2>
+              <p className="text-xs text-white/95 mt-1 font-medium max-w-[280px] leading-snug">
+                {deliverySettings?.deliveryDescription || 'Authentic Indian Sweets, Fresh Designer Cakes & Fast Food delivered straight to your door!'}
+              </p>
+
+              <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-white/20 text-[10px] font-bold">
+                <span className="flex items-center gap-1 bg-white/20 px-2 py-0.5 rounded-md">
+                  ⏱️ Fast delivery 30-45 mins
+                </span>
+                <span className="flex items-center gap-1 bg-emerald-600 text-white px-2 py-0.5 rounded-md">
+                  🌿 100% PURE VEG
+                </span>
+              </div>
+            </div>
+            {/* Decorative food motif watermark */}
+            <div className="absolute -right-4 -bottom-6 text-7xl opacity-20 pointer-events-none select-none">
+              🎂
             </div>
           </div>
-          {/* Decorative food motif watermark */}
-          <div className="absolute -right-4 -bottom-6 text-7xl opacity-20 pointer-events-none select-none">
-            🎂
-          </div>
-        </div>
+        )}
       </div>
 
-      {/* 2. Quick Action Cards (Screenshot 2: YouTube Subscribe & App Download) */}
-      <div className="px-3 pb-2 grid grid-cols-2 gap-2.5">
-        {/* YouTube Channel Subscribe Card */}
-        <div className="bg-white rounded-xl p-3 border border-stone-200 shadow-2xs flex flex-col justify-between">
+      {/* 2. Quick Action Cards (Responsive 2 cols on mobile, 4 cols on desktop) */}
+      <div className="px-3 sm:px-5 pb-3 grid grid-cols-2 md:grid-cols-4 gap-2.5 sm:gap-3.5">
+        {/* Card 1: YouTube Channel Subscribe Card */}
+        <div className="bg-white rounded-xl p-3 border border-stone-200 shadow-2xs flex flex-col justify-between hover:shadow-sm transition-shadow">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <div className="w-7 h-7 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
@@ -191,8 +320,8 @@ export default function HomeTab({
           </a>
         </div>
 
-        {/* Download App APK / Store Location Card */}
-        <div className="bg-white rounded-xl p-3 border border-stone-200 shadow-2xs flex flex-col justify-between">
+        {/* Card 2: Download App APK */}
+        <div className="bg-white rounded-xl p-3 border border-stone-200 shadow-2xs flex flex-col justify-between hover:shadow-sm transition-shadow">
           <div>
             <div className="flex items-center gap-2 mb-1.5">
               <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
@@ -214,6 +343,55 @@ export default function HomeTab({
             className="mt-2.5 w-full bg-[#b3001e] hover:bg-red-800 text-white text-[11px] font-bold py-1.5 rounded-lg flex items-center justify-center gap-1 transition-colors"
           >
             <span>Download</span>
+          </a>
+        </div>
+
+        {/* Card 3: Chandpur Store Location (Desktop & Tablet) */}
+        <div className="bg-white rounded-xl p-3 border border-stone-200 shadow-2xs flex flex-col justify-between hover:shadow-sm transition-shadow">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <div className="w-7 h-7 rounded-lg bg-amber-100 text-amber-700 flex items-center justify-center shrink-0">
+                <MapPin className="w-4 h-4" />
+              </div>
+              <div className="text-[11px] font-bold text-stone-900 leading-tight">
+                Bakery Location
+              </div>
+            </div>
+            <p className="text-[10px] text-stone-500 leading-tight line-clamp-1">
+              Patiyapara Chowk, Chandpur
+            </p>
+          </div>
+          <button
+            onClick={onOpenLocation}
+            className="mt-2.5 w-full bg-stone-800 hover:bg-stone-900 text-white text-[11px] font-bold py-1.5 rounded-lg flex items-center justify-center gap-1 transition-colors cursor-pointer"
+          >
+            <Navigation className="w-3 h-3 text-amber-400" />
+            <span>Directions</span>
+          </button>
+        </div>
+
+        {/* Card 4: WhatsApp Inquiry Helpline */}
+        <div className="bg-white rounded-xl p-3 border border-stone-200 shadow-2xs flex flex-col justify-between hover:shadow-sm transition-shadow">
+          <div>
+            <div className="flex items-center gap-2 mb-1.5">
+              <div className="w-7 h-7 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0">
+                <MessageCircle className="w-4 h-4 fill-current" />
+              </div>
+              <div className="text-[11px] font-bold text-stone-900 leading-tight">
+                Direct WhatsApp
+              </div>
+            </div>
+            <p className="text-[10px] text-stone-500 leading-tight line-clamp-1">
+              Chat with owner 8604888113
+            </p>
+          </div>
+          <a
+            href={whatsappInquiryUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2.5 w-full bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] font-bold py-1.5 rounded-lg flex items-center justify-center gap-1 transition-colors"
+          >
+            <span>Chat Now</span>
           </a>
         </div>
       </div>
@@ -280,7 +458,7 @@ export default function HomeTab({
 
       {/* 4. Recommended For You Horizontal Carousel (Screenshot 2) */}
       {selectedCategory === 'all' && !searchQuery && recommendedItems.length > 0 && (
-        <div className="mb-3 px-3">
+        <div className="mb-4 px-3 sm:px-5">
           <div className="flex items-center justify-between mb-2">
             <h3 className="text-xs font-black tracking-wide text-stone-900 uppercase">
               RECOMMENDED FOR YOU
@@ -291,7 +469,6 @@ export default function HomeTab({
           <div className="flex items-stretch gap-3 overflow-x-auto no-scrollbar pb-1">
             {recommendedItems.map((item) => {
               const qtyInCart = getItemQuantityInCart(item.id);
-              const offerBadge = item.offerTag || (item.bestseller ? 'BUY 10 PEC 2PEC FREE' : 'BUY 1 GET 1 FREE 50% OFF');
 
               return (
                 <div
@@ -300,10 +477,17 @@ export default function HomeTab({
                   className="w-48 shrink-0 bg-white rounded-xl border border-stone-200 shadow-2xs overflow-hidden flex flex-col justify-between cursor-pointer hover:shadow-sm transition-shadow"
                 >
                   <div>
-                    {/* Offer Badge Header */}
-                    <div className="bg-[#b3001e] text-white text-[9px] font-black px-2 py-0.5 text-center tracking-wider uppercase truncate">
-                      {offerBadge}
-                    </div>
+                    {/* Offer Badge Header - only shown if this item actually has an offerTag in the sheet, or bestseller */}
+                    {item.offerTag ? (
+                      <div className="bg-[#b3001e] text-white text-[9px] font-black px-2 py-0.5 text-center tracking-wider uppercase truncate flex items-center justify-center gap-1 animate-pulse">
+                        <Flame className="w-2.5 h-2.5 fill-white text-white" />
+                        <span>{item.offerTag}</span>
+                      </div>
+                    ) : item.bestseller ? (
+                      <div className="bg-amber-600 text-white text-[9px] font-black px-2 py-0.5 text-center tracking-wider uppercase truncate">
+                        ⭐ BESTSELLER
+                      </div>
+                    ) : null}
 
                     {/* Image / Thumbnail */}
                     <div className="relative h-28 bg-stone-100 overflow-hidden">
@@ -373,9 +557,9 @@ export default function HomeTab({
         </div>
       )}
 
-      {/* 5. Food Item List (Matching Screenshot 2 Food Cards) */}
-      <div className="px-3">
-        <div className="flex items-center justify-between mb-2 px-1">
+      {/* 5. Food Item List (Matching Screenshot 2 Food Cards - Responsive Grid for Laptop) */}
+      <div className="px-3 sm:px-5">
+        <div className="flex items-center justify-between mb-2.5 px-1">
           <div className="flex items-center gap-1.5">
             <span className="text-xs font-black text-stone-900 uppercase tracking-wide">
               {selectedCategory === 'all' ? 'All Products' : categories.find((c) => c.id === selectedCategory)?.name || selectedCategory}
@@ -409,7 +593,7 @@ export default function HomeTab({
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 sm:space-y-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-5">
             {filteredItems.map((item) => {
               const qtyInCart = getItemQuantityInCart(item.id);
               const stockCount = item.stock || (item.category === 'cakes' ? 30 : 67);
@@ -419,7 +603,7 @@ export default function HomeTab({
                 <div
                   key={item.id}
                   onClick={() => onSelectItem(item)}
-                  className="bg-white rounded-2xl border border-stone-200 shadow-2xs overflow-hidden cursor-pointer hover:shadow-md transition-all"
+                  className="bg-white rounded-2xl border border-stone-200 shadow-2xs overflow-hidden cursor-pointer hover:shadow-md transition-all flex flex-col justify-between h-full group"
                 >
                   {/* Hero Food Image Banner (16:9 ratio) */}
                   <div className="relative aspect-[16/9] w-full bg-stone-100 overflow-hidden">
@@ -435,17 +619,22 @@ export default function HomeTab({
                     />
 
                     {/* Top Overlay Badges */}
-                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5 flex-wrap">
                       {/* Veg Symbol */}
                       <div className="w-5 h-5 bg-white/95 rounded-sm border-2 border-emerald-600 flex items-center justify-center shadow-xs">
                         <div className="w-2.5 h-2.5 rounded-full bg-emerald-600" />
                       </div>
                       
-                      {item.badge && (
-                        <span className="bg-[#b3001e] text-white text-[9px] font-black px-2 py-0.5 rounded shadow-xs uppercase tracking-wider">
-                          {item.badge}
+                      {item.offerTag ? (
+                        <span className="bg-[#b3001e] text-white text-[9px] font-black px-2 py-0.5 rounded shadow-xs uppercase tracking-wider flex items-center gap-0.5 animate-pulse">
+                          <Flame className="w-2.5 h-2.5 fill-white text-white" />
+                          <span>{item.offerTag}</span>
                         </span>
-                      )}
+                      ) : item.badge ? (
+                        <span className="bg-amber-600 text-white text-[9px] font-black px-2 py-0.5 rounded shadow-xs uppercase tracking-wider flex items-center gap-0.5">
+                          <span>⭐ {item.badge}</span>
+                        </span>
+                      ) : null}
                     </div>
 
                     {/* Rating Pill */}

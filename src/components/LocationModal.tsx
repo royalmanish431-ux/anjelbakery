@@ -17,7 +17,7 @@ export default function LocationModal({ isOpen, onClose }: LocationModalProps) {
   return (
     <div className="fixed inset-0 z-[2500] flex items-center justify-center p-4 bg-stone-950/70 backdrop-blur-xs animate-in fade-in duration-150">
       <div 
-        className="w-full max-w-[420px] bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col"
+        className="w-full max-w-md bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Header */}

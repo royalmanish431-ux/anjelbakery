@@ -185,15 +185,15 @@ export default function ProfileTab({
   };
 
   return (
-    <div className="min-h-screen bg-stone-100 pb-28">
+    <div className="min-h-screen bg-stone-100 pb-28 md:pb-12">
       {/* 1. Dark Green Banner (Screenshot 3) */}
-      <div className="p-3">
-        <div className="rounded-2xl bg-[#0f5132] text-white p-4 shadow-sm flex items-center gap-3.5">
+      <div className="p-3 sm:p-5 max-w-2xl mx-auto">
+        <div className="rounded-2xl bg-[#0f5132] text-white p-4 sm:p-5 shadow-sm flex items-center gap-3.5">
           <div className="w-12 h-12 rounded-full bg-white/15 border border-white/20 flex items-center justify-center shrink-0 text-white">
             <User className="w-6 h-6" />
           </div>
           <div>
-            <h1 className="text-base font-black tracking-tight text-white leading-tight">
+            <h1 className="text-base sm:text-lg font-black tracking-tight text-white leading-tight">
               Customer Profile
             </h1>
             <p className="text-xs text-white/80 font-medium mt-0.5 leading-snug">
@@ -203,7 +203,7 @@ export default function ProfileTab({
         </div>
       </div>
 
-      <div className="px-3 space-y-3">
+      <div className="px-3 sm:px-5 max-w-2xl mx-auto space-y-3 sm:space-y-4">
         {/* Auth Mode Toggle Pill (Create Profile vs Login) */}
         <div className="flex bg-stone-200/80 p-1 rounded-xl">
           <button

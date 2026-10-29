@@ -71,6 +71,7 @@ export default function CartTab({
     subtotal: itemsTotal,
     deliveryCharge: estimatedDelivery,
     packagingCharge: 0,
+    promoCode: deliverySettings?.storeOffer,
     orderType: orderPreference,
     customerName,
     customerAddress: deliveryAddress,
@@ -120,34 +121,38 @@ export default function CartTab({
   }
 
   return (
-    <div className="min-h-screen bg-stone-100 pb-28">
+    <div className="min-h-screen bg-stone-100 pb-28 md:pb-12">
       {/* 1. Header (Matching Screenshot 1 & 4) */}
-      <div className="bg-white px-4 py-3 border-b border-stone-200 flex items-center justify-between sticky top-0 z-50 shadow-2xs">
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={onSwitchToHome}
-            className="p-1 -ml-1 text-stone-700 hover:text-stone-900 active:scale-95 transition-transform"
-            aria-label="Back to home"
-          >
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div>
-            <h1 className="text-base font-black text-stone-900 leading-tight">Your Cart</h1>
-            <p className="text-[11px] text-stone-500 font-medium">
-              {totalCount} {totalCount === 1 ? 'item' : 'items'} selected
-            </p>
+      <div className="bg-white px-4 sm:px-6 py-3 border-b border-stone-200 sticky top-0 z-50 shadow-2xs">
+        <div className="max-w-6xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <button
+              onClick={onSwitchToHome}
+              className="p-1 -ml-1 text-stone-700 hover:text-stone-900 active:scale-95 transition-transform"
+              aria-label="Back to home"
+            >
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div>
+              <h1 className="text-base font-black text-stone-900 leading-tight">Your Cart</h1>
+              <p className="text-[11px] text-stone-500 font-medium">
+                {totalCount} {totalCount === 1 ? 'item' : 'items'} selected
+              </p>
+            </div>
           </div>
-        </div>
 
-        <button
-          onClick={onClearCart}
-          className="text-xs font-bold text-[#b3001e] hover:underline px-2 py-1"
-        >
-          Clear Cart
-        </button>
+          <button
+            onClick={onClearCart}
+            className="text-xs font-bold text-[#b3001e] hover:underline px-2 py-1"
+          >
+            Clear Cart
+          </button>
+        </div>
       </div>
 
-      <div className="p-3.5 space-y-3.5">
+      <div className="p-3.5 sm:p-6 max-w-6xl mx-auto lg:grid lg:grid-cols-12 lg:gap-8 lg:items-start space-y-4 lg:space-y-0">
+        {/* Left Column (Items, Preference & Customer Info) */}
+        <div className="lg:col-span-7 space-y-4">
         {/* 2. Order Preference Segmented Controls (Delivery, Dine-In, Takeaway) */}
         <div>
           <div className="text-[11px] font-bold text-stone-500 uppercase tracking-wider mb-2 px-1">
@@ -342,7 +347,10 @@ export default function CartTab({
             })}
           </div>
         </div>
+      </div>
 
+      {/* Right Column (Summary & Checkout on Desktop) */}
+      <div className="lg:col-span-5 space-y-4 lg:sticky lg:top-24">
         {/* 5. Order Summary Card (Screenshot 4) */}
         <div className="bg-white rounded-2xl p-4 border border-stone-200 shadow-2xs space-y-2.5">
           <div className="flex items-center justify-between text-xs text-stone-700">
@@ -363,6 +371,24 @@ export default function CartTab({
               {estimatedDelivery === 0 ? 'FREE' : `₹${estimatedDelivery}`}
             </span>
           </div>
+
+          {/* Active Store Offer Banner from Column L */}
+          {deliverySettings?.storeOffer && (
+            <div className="bg-rose-50 border border-rose-200 rounded-xl p-2.5 flex items-center justify-between text-xs font-bold text-stone-900 shadow-2xs">
+              <div className="flex items-center gap-2">
+                <span className="w-6 h-6 rounded-lg bg-[#b3001e] text-white flex items-center justify-center shrink-0 text-xs font-black">
+                  🏷️
+                </span>
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-stone-500">Owner Special Offer</span>
+                  <div className="text-xs font-black text-[#b3001e]">{deliverySettings.storeOffer}</div>
+                </div>
+              </div>
+              <span className="bg-[#b3001e] text-white text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wider">
+                Applied
+              </span>
+            </div>
+          )}
 
           {/* Free Delivery Announcement Alert Banner (Google Sheet Column K: Delivery discription) */}
           <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-center my-1.5 shadow-2xs">
@@ -405,6 +431,7 @@ export default function CartTab({
         <footer className="text-center text-xs text-stone-400 pt-6">
           <p>© 2026 Angel Bakery. All rights reserved.</p>
         </footer>
+      </div>
       </div>
     </div>
   );

@@ -257,8 +257,8 @@ export default function App() {
   );
 
   return (
-    <div className="flex justify-center min-h-screen bg-[#e5e5e5] font-sans text-stone-900 antialiased selection:bg-rose-100 selection:text-rose-900">
-      <div className="w-full max-w-[480px] bg-[#f4f6f8] min-h-screen relative shadow-2xl flex flex-col overflow-x-hidden border-x border-stone-300">
+    <div className="min-h-screen bg-stone-100 font-sans text-stone-900 antialiased selection:bg-rose-100 selection:text-rose-900 flex flex-col">
+      <div className="w-full max-w-7xl mx-auto bg-stone-100 min-h-screen relative flex flex-col">
         {/* Sidebar */}
         <Sidebar
           isOpen={sidebarOpen}
@@ -268,7 +268,7 @@ export default function App() {
           onOpenLocation={() => setLocationModalOpen(true)}
         />
 
-        {/* Header */}
+        {/* Header (Responsive for Mobile & Desktop) */}
         <Header
           title={pageTitle}
           onToggleSidebar={() => setSidebarOpen(true)}
@@ -278,6 +278,11 @@ export default function App() {
           setShowFilters={setShowFilters}
           activeFilterCount={0}
           onOpenLocation={() => setLocationModalOpen(true)}
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          cartCount={cartItems.reduce((acc, c) => acc + c.quantity, 0)}
+          onRefreshSheet={handleRefreshSheet}
+          isSyncingSheet={isSyncingSheet}
         />
 
         {/* Tab Content */}
@@ -296,6 +301,7 @@ export default function App() {
               onOpenLocation={() => setLocationModalOpen(true)}
               onRefreshSheet={handleRefreshSheet}
               isSyncingSheet={isSyncingSheet}
+              deliverySettings={deliverySettings}
             />
           )}
 
@@ -349,11 +355,11 @@ export default function App() {
             href={floatingWhatsAppUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="fixed bottom-[130px] right-4 z-[997] bg-emerald-600 hover:bg-emerald-500 text-white p-3 rounded-full shadow-xl flex items-center gap-1.5 transition-transform hover:scale-105 active:scale-95 border-2 border-white"
+            className="fixed bottom-[130px] md:bottom-8 right-4 md:right-8 z-[997] bg-emerald-600 hover:bg-emerald-500 text-white p-3 md:px-4 md:py-3 rounded-full shadow-xl flex items-center gap-2 transition-transform hover:scale-105 active:scale-95 border-2 border-white"
             title="Chat with owner on WhatsApp (8604888113)"
           >
             <MessageCircle className="w-5 h-5 fill-current" />
-            <span className="text-[11px] font-extrabold pr-1 hidden sm:inline">
+            <span className="text-xs font-black pr-1 hidden sm:inline">
               WhatsApp 8604888113
             </span>
           </a>
@@ -361,7 +367,7 @@ export default function App() {
 
         {/* Added To Cart Floating Banner Matching Image 2 */}
         {cartNotification && (
-          <div className="fixed top-3 left-3 right-3 max-w-[460px] mx-auto z-[2500] bg-stone-900/95 backdrop-blur-md text-white p-3 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3 animate-in slide-in-from-top duration-200">
+          <div className="fixed top-3 left-3 right-3 max-w-[460px] md:max-w-xl mx-auto z-[2500] bg-stone-900/95 backdrop-blur-md text-white p-3.5 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3 animate-in slide-in-from-top duration-200">
             <div className="relative w-11 h-11 rounded-xl overflow-hidden bg-stone-800 shrink-0 border border-white/20">
               <img
                 src={cartNotification.itemImage || CATEGORY_DEFAULT_IMAGES['all']}

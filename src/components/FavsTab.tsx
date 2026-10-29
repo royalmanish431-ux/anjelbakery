@@ -23,10 +23,10 @@ export default function FavsTab({
   const favoriteItems = allItems.filter((item) => favoriteIds.includes(item.id));
 
   return (
-    <div className="p-4 pb-28 bg-[#f4f6f8] min-h-screen">
-      <div className="flex items-center justify-between mb-3">
+    <div className="p-4 sm:p-6 pb-28 md:pb-12 bg-stone-100 min-h-screen max-w-6xl mx-auto">
+      <div className="flex items-center justify-between mb-4">
         <div>
-          <h2 className="text-base font-black text-stone-900">
+          <h2 className="text-base sm:text-lg font-black text-stone-900">
             Your Favorite Items
           </h2>
           <p className="text-[11px] text-stone-500 font-medium">
@@ -37,7 +37,7 @@ export default function FavsTab({
 
       {favoriteItems.length === 0 ? (
         <div className="bg-white rounded-2xl p-8 text-center border border-stone-200 my-6 space-y-3">
-          <div className="w-14 h-14 bg-rose-50 text-[#e23744] rounded-full flex items-center justify-center mx-auto">
+          <div className="w-14 h-14 bg-rose-50 text-[#b3001e] rounded-full flex items-center justify-center mx-auto">
             <Heart className="w-7 h-7" />
           </div>
           <h3 className="font-bold text-stone-800 text-sm">
@@ -48,14 +48,14 @@ export default function FavsTab({
           </p>
           <button
             onClick={onSwitchToHome}
-            className="mt-2 px-5 py-2.5 bg-[#e23744] text-white rounded-xl text-xs font-bold flex items-center gap-2 mx-auto hover:bg-[#cb2a37] transition-colors"
+            className="mt-2 px-5 py-2.5 bg-[#b3001e] text-white rounded-xl text-xs font-bold flex items-center gap-2 mx-auto hover:bg-red-800 transition-colors"
           >
             <span>Explore Angel Bakery Menu</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="space-y-3 sm:space-y-0 sm:grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 sm:gap-4">
           {favoriteItems.map((item) => (
             <div
               key={item.id}
