@@ -1,9 +1,9 @@
 import { BakeryItem, BakeryCategory, DeliverySettings, ItemVariant } from '../types';
 import { BAKERY_ITEMS, GOOGLE_SHEET_CSV_EXPORT, DEFAULT_DELIVERY_SETTINGS } from '../data/bakeryData';
 
-const CACHE_KEY = 'angel_bakery_sheet_items_v15';
-const CACHE_TIME_KEY = 'angel_bakery_sheet_items_time_v15';
-const CACHE_DELIVERY_KEY = 'angel_bakery_delivery_settings_v15';
+const CACHE_KEY = 'angel_bakery_sheet_items_v25';
+const CACHE_TIME_KEY = 'angel_bakery_sheet_items_time_v25';
+const CACHE_DELIVERY_KEY = 'angel_bakery_delivery_settings_v25';
 
 export interface SheetParseResult {
   items: BakeryItem[];
@@ -170,16 +170,18 @@ function findBestCuratedMatch(sheetName: string, curatedList: BakeryItem[]): Bak
  * Helper to extract numeric threshold from description (e.g. "600 rupay" -> 600)
  */
 function extractFreeDeliveryThreshold(desc?: string): number {
-  if (!desc) return DEFAULT_DELIVERY_SETTINGS.freeDeliveryThreshold;
+  if (!desc) return 0;
+  const lower = desc.toLowerCase();
+  if (!lower.includes('free')) return 0;
   const match = 
-    desc.match(/(?:take\s*(?:a\s*)?|above\s*|over\s*|orders?\s*(?:of\s*)?|₹\s*)(\d+)/i) || 
-    desc.match(/(\d+)\s*(?:rupay|rs|inr|₹)/i) ||
-    desc.match(/\b(\d{3,4})\b/);
+    desc.match(/(?:free delivery|free shipping|free)\s*(?:on|above|over|after)?\s*(?:orders?\s*(?:of\s*)?|₹\s*)(\d+)/i) || 
+    desc.match(/(?:take\s*(?:a\s*)?|above\s*|over\s*|orders?\s*(?:of\s*)?|₹\s*)(\d+)\s*(?:rupay|rs|inr|₹)?.*free/i) ||
+    desc.match(/(\d+)\s*(?:rupay|rs|inr|₹).*free/i);
   if (match && match[1]) {
     const val = parseInt(match[1], 10);
     if (val >= 50 && val <= 5000) return val;
   }
-  return DEFAULT_DELIVERY_SETTINGS.freeDeliveryThreshold;
+  return 0;
 }
 
 /**
@@ -455,11 +457,11 @@ export function parseSheetCSVFull(csvText: string): SheetParseResult {
     }
   }
 
-  // Construct final delivery settings (no fake demo storeOffer)
+  // Construct final delivery settings dynamically from Google Sheet Columns J & K
   const deliverySettings: DeliverySettings = {
-    deliveryFee: detectedDeliveryFee !== undefined ? detectedDeliveryFee : DEFAULT_DELIVERY_SETTINGS.deliveryFee,
-    deliveryDescription: detectedDeliveryDesc || DEFAULT_DELIVERY_SETTINGS.deliveryDescription,
-    freeDeliveryThreshold: extractFreeDeliveryThreshold(detectedDeliveryDesc || DEFAULT_DELIVERY_SETTINGS.deliveryDescription),
+    deliveryFee: detectedDeliveryFee !== undefined ? detectedDeliveryFee : 0,
+    deliveryDescription: detectedDeliveryDesc || '',
+    freeDeliveryThreshold: extractFreeDeliveryThreshold(detectedDeliveryDesc),
     storeOffer: detectedStoreOffer || undefined,
   };
 

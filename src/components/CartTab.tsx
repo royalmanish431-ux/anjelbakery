@@ -55,14 +55,19 @@ export default function CartTab({
   const itemsTotal = cartItems.reduce((sum, item) => sum + item.selectedPrice * item.quantity, 0);
 
   // Delivery fee dynamically set by Owner in Google Sheet Column J (Delivery value) and Column K (Delivery discription)
-  const deliveryFee = deliverySettings?.deliveryFee ?? BAKERY_INFO.deliveryFee ?? 50;
-  const freeThreshold = deliverySettings?.freeDeliveryThreshold ?? BAKERY_INFO.freeDeliveryThreshold ?? 600;
-  const deliveryDescription = deliverySettings?.deliveryDescription || `if till you take a ${freeThreshold} rupay then you get free delivery 🛺`;
+  const deliveryFee = deliverySettings?.deliveryFee ?? 0;
+  const freeThreshold = deliverySettings?.freeDeliveryThreshold ?? 0;
+  const deliveryDescription = deliverySettings?.deliveryDescription || '';
 
-  const isFreeDelivery = itemsTotal >= freeThreshold || orderPreference !== 'delivery';
+  // Free delivery logic: FREE if deliveryFee is 0, or if freeThreshold is reached, or for non-delivery orders
+  const isFreeDelivery = 
+    orderPreference !== 'delivery' || 
+    deliveryFee === 0 || 
+    (freeThreshold > 0 && itemsTotal >= freeThreshold);
+
   const estimatedDelivery = orderPreference === 'delivery' ? (isFreeDelivery ? 0 : deliveryFee) : 0;
   const totalAmount = itemsTotal + estimatedDelivery;
-  const amountNeededForFreeDelivery = Math.max(0, freeThreshold - itemsTotal);
+  const amountNeededForFreeDelivery = freeThreshold > 0 ? Math.max(0, freeThreshold - itemsTotal) : 0;
 
   // WhatsApp Order Submission link
   const whatsAppOrderUrl = generateWhatsAppOrderUrl({
@@ -262,6 +267,9 @@ export default function CartTab({
               const item = cartItem.item;
               const lineTotal = cartItem.selectedPrice * cartItem.quantity;
 
+              const rawSize = cartItem.selectedSize;
+              const displaySize = rawSize === '225 Gram' ? '250 Gram' : rawSize;
+
               return (
                 <div key={index} className="py-3 first:pt-0 last:pb-0">
                   <div className="flex items-start justify-between gap-2">
@@ -271,9 +279,9 @@ export default function CartTab({
                         <span className="text-sm font-extrabold text-stone-900 leading-tight">
                           {item.name}
                         </span>
-                        {cartItem.selectedSize && (
+                        {displaySize && (
                           <span className="text-[9px] font-bold bg-rose-50 text-[#b3001e] px-1.5 py-0.5 rounded border border-rose-200">
-                            {cartItem.selectedSize}
+                            {displaySize}
                           </span>
                         )}
                       </div>
@@ -286,9 +294,9 @@ export default function CartTab({
 
                       <div className="text-xs font-bold text-[#b3001e] mt-1">
                         ₹{cartItem.selectedPrice}
-                        {cartItem.selectedSize ? (
+                        {displaySize ? (
                           <span className="text-[10px] text-stone-500 font-normal ml-1">
-                            ({cartItem.selectedSize})
+                            ({displaySize})
                           </span>
                         ) : (item.category === 'cakes' ? (
                           <span className="text-[10px] text-stone-500 font-normal ml-1">
@@ -390,17 +398,21 @@ export default function CartTab({
             </div>
           )}
 
-          {/* Free Delivery Announcement Alert Banner (Google Sheet Column K: Delivery discription) */}
-          <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-center my-1.5 shadow-2xs">
-            <div className="text-[11px] font-bold text-amber-900 leading-tight">
-              {deliveryDescription}
+          {/* Delivery Announcement Alert Banner (Google Sheet Column K: Delivery discription) */}
+          {deliveryDescription && (
+            <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-center my-1.5 shadow-2xs">
+              <div className="text-[11px] font-bold text-amber-900 leading-tight">
+                {deliveryDescription}
+              </div>
+              {freeThreshold > 0 && (
+                <div className="text-[11px] font-black text-amber-700 mt-1">
+                  {amountNeededForFreeDelivery > 0
+                    ? `Add ₹${amountNeededForFreeDelivery} more to get FREE Delivery!`
+                    : `🎉 Congratulations! You unlocked FREE Delivery!`}
+                </div>
+              )}
             </div>
-            <div className="text-[11px] font-black text-amber-700 mt-1">
-              {amountNeededForFreeDelivery > 0
-                ? `Add ₹${amountNeededForFreeDelivery} more to get FREE Delivery!`
-                : `🎉 Congratulations! You unlocked FREE Delivery!`}
-            </div>
-          </div>
+          )}
 
           <div className="flex items-center justify-between pt-2 border-t border-stone-200">
             <span className="text-sm font-extrabold text-stone-900">Total Amount</span>

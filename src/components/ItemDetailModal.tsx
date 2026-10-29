@@ -41,7 +41,7 @@ export default function ItemDetailModal({
 
     if (hasMult) {
       if (isC) {
-        setSelectedSize(hasMed ? '0.5 kg' : '1 kg');
+        setSelectedSize('1 kg');
       } else {
         setSelectedSize('Regular');
       }
@@ -64,12 +64,12 @@ export default function ItemDetailModal({
   ] : [];
 
   const cakeSizes = hasMultipleSizes ? [
-    ...(hasMedium ? [{ label: item.mediumRaw || '450 Gram (0.5 kg)', price: item.mediumPrice!, key: '0.5 kg' }] : []),
     { label: '1.0 kg', price: item.price, key: '1 kg' },
+    ...(hasMedium ? [{ label: item.mediumRaw || '450 Gram (0.5 kg)', price: item.mediumPrice!, key: '0.5 kg' }] : []),
     ...(hasLarge ? [{
-      label: item.largePrice! < item.price ? (item.largeRaw || '225 Gram') : (item.largeRaw || '2.0 kg'),
+      label: item.largePrice! < item.price ? (item.largeRaw || '250 gram') : (item.largeRaw || '2.0 kg'),
       price: item.largePrice!,
-      key: item.largePrice! < item.price ? '225 Gram' : '2 kg',
+      key: item.largePrice! < item.price ? '250 Gram' : '2 kg',
     }] : []),
   ] : [];
 

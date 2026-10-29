@@ -35,8 +35,8 @@ export interface BakeryItem {
   mediumPrice?: number;
   largePrice?: number;
   halfKgPrice?: number;
-  mediumRaw?: string; // Column E in Google Sheet (e.g. "450 Gram")
-  largeRaw?: string; // Column F in Google Sheet (e.g. "225 Gram")
+  mediumRaw?: string; // Column E in Google Sheet (e.g. "450 Gram" / "0.5 kg")
+  largeRaw?: string; // Column F in Google Sheet (e.g. "250 Gram")
   variants?: ItemVariant[];
   description: string;
   nameHindi?: string;

@@ -164,7 +164,11 @@ export default function App() {
   };
 
   // Add to cart from modal or card
-  const handleAddToCart = (newCartItem: CartItem) => {
+  const handleAddToCart = (rawCartItem: CartItem) => {
+    const newCartItem: CartItem = {
+      ...rawCartItem,
+      selectedSize: rawCartItem.selectedSize === '225 Gram' ? '250 Gram' : rawCartItem.selectedSize,
+    };
     setCartItems((prev) => {
       const existingIdx = prev.findIndex(
         (ci) =>

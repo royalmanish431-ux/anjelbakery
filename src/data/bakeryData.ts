@@ -20,17 +20,17 @@ export const BAKERY_INFO = {
   rating: 4.8,
   totalReviews: 2450,
   deliveryTime: '25-35 mins',
-  freeDeliveryThreshold: 600,
-  deliveryFee: 50, // Column J: "Delivery value"
-  deliveryDescription: 'if till you take a 600 rupay then you get free delivery 🛺', // Column K
+  freeDeliveryThreshold: 0,
+  deliveryFee: 0, // Column J: "Delivery value"
+  deliveryDescription: '', // Column K: "Delivery discription"
   packagingFee: 0,
   pureVeg: true,
 };
 
 export const DEFAULT_DELIVERY_SETTINGS = {
-  deliveryFee: 50,
-  freeDeliveryThreshold: 600,
-  deliveryDescription: 'if till you take a 600 rupay then you get free delivery 🛺',
+  deliveryFee: 0,
+  freeDeliveryThreshold: 0,
+  deliveryDescription: '',
   storeOffer: undefined as string | undefined,
 };
 

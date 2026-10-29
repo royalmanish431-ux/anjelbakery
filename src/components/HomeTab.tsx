@@ -270,7 +270,7 @@ export default function HomeTab({
               </div>
               
               <h2 className="text-xl sm:text-2xl font-black tracking-tight leading-tight uppercase drop-shadow-xs">
-                FREE DELIVERY
+                {deliverySettings?.deliveryFee === 0 ? 'FREE DELIVERY' : `DELIVERY ₹${deliverySettings?.deliveryFee}`}
               </h2>
               <p className="text-xs text-white/95 mt-1 font-medium max-w-[280px] leading-snug">
                 {deliverySettings?.deliveryDescription || 'Authentic Indian Sweets, Fresh Designer Cakes & Fast Food delivered straight to your door!'}
@@ -756,6 +756,8 @@ export default function HomeTab({
                       let variants: { letter: string; label: string; key: string; price: number }[] = [];
 
                       if (isCake) {
+                        // User specified ordering: 1st 1kg, 2nd 0.5kg (its half), 3rd 250 gram (its half)
+                        variants.push({ letter: '1kg', label: '1.0 kg', key: '1 kg', price: item.price });
                         if (hasMedium) {
                           variants.push({
                             letter: '0.5k',
@@ -764,13 +766,12 @@ export default function HomeTab({
                             price: item.mediumPrice!,
                           });
                         }
-                        variants.push({ letter: '1kg', label: '1.0 kg', key: '1 kg', price: item.price });
                         if (hasLarge) {
                           const isGram = item.largePrice! < item.price;
                           variants.push({
-                            letter: isGram ? 'Gram' : '2kg',
-                            label: isGram ? (item.largeRaw || '225 Gram') : '2.0 kg',
-                            key: isGram ? '225 Gram' : '2 kg',
+                            letter: isGram ? '250g' : '2kg',
+                            label: isGram ? (item.largeRaw || '250 gram') : '2.0 kg',
+                            key: isGram ? '250 Gram' : '2 kg',
                             price: item.largePrice!,
                           });
                         }
